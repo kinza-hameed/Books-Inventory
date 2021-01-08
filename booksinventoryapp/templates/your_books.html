@@ -1,0 +1,70 @@
+{% extends "base_generic.html" %}
+{% block content %}
+
+
+<div>  
+  <div class="col-sm-7">
+  <h2>Books in your Inventory </h2> </div><hr/>
+
+  {% comment %} <ol>
+  {% for book in bookseller %}
+    <li> {{ book.title }} </li>
+  {% endfor %}
+  </ol> {% endcomment %}
+    
+    <!--Section: Products v.3-->
+  <section class="text-center mb-4">
+    <div class="row wow fadeIn">
+    {% for book in page_obj %}
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card">
+          <div class="view overlay">
+                {%comment%}<img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top" {%endcomment%}
+          <img src="{{ book.cover_page.url }}" class="card-img-top">
+          {% comment %} {{ book.cover_page.url }} {% endcomment %}
+                {%comment%} <a href="{{ book.get_absolute_url }}"> {% endcomment%}
+          </div>
+
+          <div class="card-body text-center">
+          <a href="" class="grey-text">
+          <h5>{{ book.title }}</h5>
+          </a>
+            <h5>
+              <strong>
+                <a href="{{ book.get_absolute_url }}" class="dark-grey-text">{{ book.author}}
+                      <span class="badge badge-pill {{ book.author }}-color"></span>
+                  </a>
+                </strong>
+              </h5>
+
+              
+
+            </div>
+
+          </div>
+
+        </div>
+          {% endfor %}
+      </div>
+
+  </section>
+    <div class="pagination justify-content-center">
+    <span class="page-item">
+
+      {% if page_obj.has_previous %}
+        <p class="text-primary" style="text-align:center;" ><a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">Previous</a></p>
+      {% endif %}  <!-- request.path to get the current page URL for creating the pagination links.--> 
+                
+      {% if page_obj.has_next %}
+        <p class="text-primary" style="text-align:center;"><a href="{{ request.path }}?page={{ page_obj.next_page_number }}">Next</a> </p>
+      {% endif %}
+
+      <span class="page-current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+    </span>
+  </div>
+    
+</div>
+
+{% endblock %}
