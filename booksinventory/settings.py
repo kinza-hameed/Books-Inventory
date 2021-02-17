@@ -1,8 +1,9 @@
 from pathlib import Path
 import os
 import dotenv
-from decouple import config,Csv
+from decouple import config
 from dotenv import load_dotenv
+import django_heroku 
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,8 +22,8 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
+  
+ALLOWED_HOSTS = ['127.0.0.1','books-inventory-app.herokuapp.com']
 #AUTH_USER_MODEL = booksinventoryapp.User
 
 # Application definition
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -123,13 +125,8 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 AWS_ACCESS_KEY_ID = config('S3_ID')
 AWS_SECRET_ACCESS_KEY = config('S3_KEY')
 AWS_STORAGE_BUCKET_NAME = 'booksinventory-bucket'
-# AWS_S3_FILE_OVERWRITE = False
-# AWS_DEFAULT_ACL = None
-
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
@@ -142,3 +139,9 @@ STATICFILES_DIRS = [
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'booksinventory.storage_backends.MediaStorage'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+import dj_database_url 
+prod_db  =  dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(prod_db)

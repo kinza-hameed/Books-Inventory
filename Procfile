@@ -1,0 +1,1 @@
+web: gunicorn booksinventory.wsgi --log-file -
