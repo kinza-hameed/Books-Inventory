@@ -1,7 +1,6 @@
 from pathlib import Path
 import os
 import dotenv
-import environ
 from decouple import config
 from dotenv import load_dotenv
 import django_heroku 
