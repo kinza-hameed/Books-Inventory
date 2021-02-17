@@ -1,0 +1,49 @@
+{% extends "base_generic.html" %}
+{% block content %}
+
+<style> 
+        input{ 
+            width:75%; 
+            padding: 12px; 
+            } 
+</style> 
+
+{% comment %} <div class="col-sm-7 mx-5">
+    <h2>Edit Book Details </h2>
+</div>
+<form method="POST">
+{% csrf_token %}
+{% for form in forms %}
+    {{ form.as_p }}
+{% endfor %}
+    <input type="submit" value="Save" />
+</form> {% endcomment %}
+
+<div class="col-sm-7">
+  <h2>Update Book Details</h2> </div><hr/>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for form in forms %}
+      {% for field in form %}
+        <div class="form-group row mt-4 ">
+          <div class="col-sm-2 col-form-label">{{ field.label_tag }}</div>
+            <div class="col-sm-7">
+              {{field}} <br>
+              {% if field.help_text %}
+                <small style="color: grey">{{ field.help_text }}</small>
+              {% endif %}
+              {% for error in field.errors %}
+                <p style="color: red">{{ error }}</p>
+              {% endfor %}
+            
+            </div>
+        </div>
+      {% endfor %}
+    {% endfor %}
+  
+    <div class="form-group row">
+      <button type="submit" class="btn btn-info btn-block">Update</button>
+    </div>
+</form>
+
+{% endblock %}

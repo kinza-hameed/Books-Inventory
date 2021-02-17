@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
-from .models import Book
+from .models import Book,BookInfo
 from django.forms import ModelForm
 
 
@@ -49,19 +49,31 @@ class SearchForm(forms.Form):
         ('publisher', "Publisher")
     )
     CHOICES = (
-        ('4','4'),
-        ('2','2'),
-        ('1','1'),
+        ('25','25'),
+        ('50','50'),
+        ('75','75'),
     )
     keyword = forms.CharField(required=True)
     books_per_page = forms.IntegerField(label='Books per page', widget=forms.Select(choices=CHOICES))
     checks = forms.MultipleChoiceField(required= False, widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
     fields = ['keyword','checks', 'books_per_page']
 
-# class PaginationForm(forms.Form):
-#     CHOICES = (
-#         ('4','4'),
-#         ('2','2'),
-#         ('1','1'),
-#     )
-#     books_per_page = forms.IntegerField(label='Books per page', widget=forms.Select(choices=CHOICES))
+# class BookUpdateForm(forms.Form):
+#     isbn = forms.IntegerField(required = True)
+#     title = forms.CharField(required=True)
+#     author = forms.CharField(required=True)
+#     publisher = forms.CharField(required=True)
+#     publication_date = forms.CharField(required=True)
+#     quantity = forms.IntegerField(required = True)
+#     price = forms.IntegerField(required = True)
+#     cover_page = forms.ImageField(required=True)
+
+class BookUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ['isbn','title','author','publisher','publication_date','cover_page']
+
+class BookInfoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = BookInfo
+        fields = ['quantity','price']

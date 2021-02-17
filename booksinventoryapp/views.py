@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import RegistrationForm, AddBookForm, AddBookDetailsForm, SearchForm
+from .forms import RegistrationForm, AddBookForm, AddBookDetailsForm, SearchForm, BookUpdateForm, BookInfoUpdateForm
 from django.http import HttpResponse
 from .models import Book, BookInfo
 from django.contrib.auth import authenticate, login, logout
@@ -12,13 +12,16 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.template.loader import get_template
 from django.db.models import Q
+from django.views.generic import ListView,DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from . import forms
+
 
 def register(request):
     if request.method =='POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            #form.password1 = make_password(form.cleaned_data['password1'])
-            #print(form.password1)
             form.save()
             return redirect("dashboard")
 
@@ -30,9 +33,6 @@ def register(request):
 
 
 def home(request):
-    # if auth
-    # if logged in => redirect
-    # else:
     return render(request,'home.html')
 
 @login_required
@@ -40,16 +40,7 @@ def dashboard(request):
     current_user = request.user
     seller_id = current_user.id
     bookseller = Book.objects.filter(seller=seller_id)
-    # for i in bookseller:
-    #     print(i.isbn)
-    # print(bookseller)
 
-    # b= Book.objects.all()
-    # print(b)
-
-    #no_of_books = bookseller.count()
-    # country = request.GET('countrySelect')
-    # print(country)
     books_per_page = 5
     paginator = Paginator(bookseller, books_per_page) # Show 5 books per page.(default)
     page_number = request.GET.get('page')
@@ -58,38 +49,24 @@ def dashboard(request):
     search_query = None
     search_query_other_seller = None
     search_is_empty = False
-    #seller = User.objects.get(id=request.user.id)
-    #bookSellerHas = seller.mybooks.all()
-    #print(bookSellerHas)
+
     if request.method == 'GET':
         search_form = SearchForm()
-        #pagination_form = PaginationForm()
-        
-    
     if request.method == 'POST':
         search_form = SearchForm(request.POST)
-        # pagination_form = PaginationForm(request.POST)
-
-        # if pagination_form.is_valid():
-        #     books_per_page = pagination_form.cleaned_data['books_per_page']
-        #     paginator = Paginator(bookseller, books_per_page) # Show 2 books per page.
-        #     page_number = request.GET.get('page')
-        #     page_obj = paginator.get_page(page_number)
-
         if search_form.is_valid(): 
             
             search_is_empty = True
             keyword = search_form.cleaned_data['keyword']
-            books_per_page = search_form.cleaned_data['books_per_page']
             checks = search_form.cleaned_data['checks']
-            print(checks)
-            paginator = Paginator(bookseller, books_per_page) # Show 2 books per page.
-            page_number = request.GET.get('page')
-            page_obj = paginator.get_page(page_number)
+            books_per_page = search_form.cleaned_data['books_per_page']
 
             if 'isbn' in checks:
                 if keyword.isnumeric():
                     search_query = Book.objects.filter(isbn__contains = int(keyword)).filter(seller = User.objects.get(username=request.user))
+                    paginator = Paginator(search_query, books_per_page) 
+                    page_number = request.POST.get('page')
+                    page_obj = paginator.get_page(page_number)
             if 'title' in checks:
                 search_query = Book.objects.filter(title__contains = keyword).filter(seller = User.objects.get(username=request.user) )
             if 'author' in checks:
@@ -129,56 +106,14 @@ def dashboard(request):
                     search_query = Book.objects.filter(Q(title__contains = keyword) | Q(publisher__contains= keyword), seller = User.objects.get(username=request.user))
             if 'title' and 'author' and 'publisher' in checks:
                 search_query = Book.objects.filter(Q(title__contains = keyword) | Q(quthor__contains = keyword) | Q(publisher__contains= keyword), seller = User.objects.get(username=request.user))
-            # if 'isbn' and 'title' and 'author' and 'publisher' in checks:
             if 'isbn' and 'title' and 'author' and 'publisher' in checks or not checks:
                 if keyword.isnumeric():
                     search_query = Book.objects.filter(isbn__contains = int(keyword)).filter(seller = User.objects.get(username=request.user))
                 else:
                     search_query = Book.objects.filter(Q(title__contains = keyword) | Q(author__contains = keyword) | Q(publisher__contains= keyword), seller = User.objects.get(username=request.user))
-
-
-            # for i in checks:
-            #     #print(i)
-            #     if i == 'isbn':
-            #         #print(int(book_title))
-            #         # if book_title in bookseller.isbn:
-            #         #     print(bookseller[0])
-
-            #         # for k in bookseller:
-            #         #     #print(str(k.isbn))
-            #         #     s=str(k.isbn)
-            #         #     if book_title in s:
-            #         #         search_query = k 
-            #         #         print(search_query)
-                    
-            #         search_query = Book.objects.filter(isbn__contains = int(book_title)).filter(seller = User.objects.get(username=request.user))
-            #         print("search", search_query)
-            #     elif i == 'title':
-            #         print(i)
-            #         search_query = Book.objects.filter(Q(title__contains = book_title) | Q(author__contains= book_title), seller = User.objects.get(username=request.user))
-            #         print(search_query)
-            #     elif i == 'author':
-            #         search_query = Book.objects.filter(author__contains = book_title).filter(seller = User.objects.get(username=request.user))
-            #     elif i == 'isbn' and i == 'title':
-                    
-            #     else:
-            #         search_query = Book.objects.filter(author__contains = book_title).filter(seller = User.objects.get(username=request.user))
-            
-
-            # search_query = Book.objects.annotate(
-            #     search=SearchVector('title__contains', 'author__contains'),
-            # ).filter(search=book_title)
-
-            #search_query = Book.objects.filter(title__contains = book_title).filter(seller = User.objects.get(username=request.user) )
-            #print the books within seller inventory
-            # if search_query:
-            #     for i in search_query:
-            #         print(i.seller.username)
-            # #print the books other then seller's inventory
-            # else:
-            #     #search_query_other_seller = Book.objects.filter(title__contains = book_title)
-            #     for i in search_query_other_seller:
-            #         print(i.seller.username)
+            paginator = Paginator(search_query, books_per_page) 
+            page_number = request.POST.get('page')
+            page_obj = paginator.get_page(page_number)
 
     context = {
         'current_user':current_user,
@@ -187,23 +122,9 @@ def dashboard(request):
         'search_form': search_form,
         'search_is_empty': search_is_empty,
         'search_query':search_query,
-        # 'search_query_other_seller': search_query_other_seller,
         'page_obj': page_obj,
     }
     return render(request,'dashboard.html', context=context)
-
-@login_required
-def your_books(request):
-    bookseller = Book.objects.filter(seller=request.user.id)
-    books_per_page = 5
-    paginator = Paginator(bookseller, books_per_page) # Show 5 books per page.(default)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    context = {
-        'bookseller':bookseller,
-        'page_obj': page_obj,
-    }
-    return render(request,'your_books.html', context=context)
 
 
 @login_required
@@ -231,9 +152,7 @@ def add_book(request):
                         price = Price
                     )
                     add_book_info.save()
-                    #print(book)
                     book_details = Book.objects.filter(isbn=Isbn)
-                    #print(book_details)
                     print('book with same isbn number is present')
                     
                     add_details_of_already_added_book = Book(
@@ -253,8 +172,6 @@ def add_book(request):
                     print('book not present')
                     return redirect('add_book_details', isbn = Isbn, seller = seller_id, quantity = Quantity, price = Price)
 
-
-        #print(form)
     context = {
         'form':form,
         'bookInSeller': bookInSeller,
@@ -264,10 +181,8 @@ def add_book(request):
 @login_required
 def add_book_details(request, isbn, seller, quantity , price):
     if request.method == 'GET':
-        #print(QuantityAndPrice)
         form = AddBookDetailsForm()
     if request.method =='POST':
-        #print(QuantityAndPrice,'this is quantity and price value')
         form = AddBookDetailsForm(request.POST, request.FILES)
         print(form.is_valid())
         if form.is_valid():
@@ -281,11 +196,51 @@ def add_book_details(request, isbn, seller, quantity , price):
             current_user = User.objects.get(username=request.user)
             form.seller = current_user
             form.quantity_and_price = add_book_info
-            print("here")
             form.save()
-            # return render(request,'dashboard.html')
             return redirect("dashboard")
             print(2)
     context = {'isbn':isbn,'seller': seller,'quantity': quantity, 'price': price, 'form':form}
     return render(request, 'add_book_details.html',context= context)
 
+
+class BookListView(LoginRequiredMixin,ListView):
+    model = Book
+    paginate_by = 4
+    template_name = "book_list.html"
+
+    def get_queryset(self):
+        return Book.objects.filter(seller=self.request.user.id).order_by('title')
+
+class BookDetailView(LoginRequiredMixin,DetailView):
+    model = Book
+    template_name = "book_detail.html"
+
+class BookDelete(LoginRequiredMixin,DeleteView):
+    model = Book
+    template_name = "book_confirm_delete.html"
+    success_url = '/books/'
+
+@login_required
+def BookUpdate(request,id,quantity_and_price):
+    book = Book.objects.get(pk=id)
+    bookinfo = BookInfo.objects.get(pk=quantity_and_price)
+
+    if request.method == 'GET':
+        forms = (BookUpdateForm(request.POST or None, instance=book),BookInfoUpdateForm(request.POST or None,instance=bookinfo))
+    
+    if request.method == 'POST':
+        forms = (BookUpdateForm(request.POST or None,  request.FILES or None, instance=book),BookInfoUpdateForm(request.POST or None,instance=bookinfo))
+        if forms[0].is_valid() and forms[1].is_valid():
+            forms[0].save()
+            forms[1].save()
+            print(forms)
+            book = Book.objects.get(pk=id)
+            context = {
+            'pk':id,
+            'book':book,
+            }
+            return render(request, 'book_detail.html',context=context)
+    context = {
+        'forms':forms,
+        }
+    return render(request, 'book_form.html',context=context)

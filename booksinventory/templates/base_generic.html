@@ -13,7 +13,8 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 
    {% load static %}
-    <link rel="stylesheet" href="{% static 'CSS/base.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'CSS/base.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="https://booksinventory-bucket.s3.us-east-2.amazonaws.com/static/CSS/base.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 </head>
 
@@ -62,8 +63,8 @@
             {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-                <li><a href="{% url 'your_books' %}">Your Books</a></li>
                 <li><a href="{% url 'add_book' %}">Add Book</a></li>
+                <li><a href="{% url 'books' %}">All Books</a></li>
                 <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>   <!-- request.path gives the link where user first click login/logout button --> <!-- after the user has succesfully logged in/out the view will use next value to redirect the user back to the page where they first click the login/logoutbutton --> 
 
 

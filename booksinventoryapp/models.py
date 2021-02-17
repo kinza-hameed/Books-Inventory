@@ -2,13 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.validators import MaxValueValidator
+from django.urls import reverse 
 
 class BookInfo(models.Model):
     quantity = models.IntegerField(validators=[MaxValueValidator(9999)], help_text='Enter Book Quantity', null= False)
     price = models.IntegerField(validators=[MaxValueValidator(9999999999999)],help_text='Enter Price of the Book', null= False)
 
     def __str__(self):
-        return str(self.quantity)
+        return str(self.id)
         
 
 class Book(models.Model):
@@ -23,6 +24,9 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self): 
+        return reverse('book-detail', args=[str(self.id)])
     
 
 
