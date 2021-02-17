@@ -121,7 +121,7 @@ USE_TZ = True
 
 LOGIN_REDIRECT_URL = '/dashboard/'
 
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 AWS_ACCESS_KEY_ID = config('S3_ID')
 AWS_SECRET_ACCESS_KEY = config('S3_KEY')
