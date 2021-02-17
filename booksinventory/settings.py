@@ -4,7 +4,7 @@ import dotenv
 from decouple import config
 from dotenv import load_dotenv
 import django_heroku 
-from boto.s3.connection import S3Connection
+# from boto.s3.connection import S3Connection
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

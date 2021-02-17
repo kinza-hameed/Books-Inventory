@@ -13,7 +13,7 @@ class BookInfo(models.Model):
         
 
 class Book(models.Model):
-    isbn = models.IntegerField(validators=[MaxValueValidator(9999999999999)],help_text='13 Character <a href="https://www.isbn-international.org/content/what-isbn">ISBN number</a>')
+    isbn = models.BigIntegerField(validators=[MaxValueValidator(9999999999999)],help_text='13 Character <a href="https://www.isbn-international.org/content/what-isbn">ISBN number</a>')
     seller = models.ForeignKey(User, related_name='mybooks', on_delete=models.CASCADE)
     title = models.CharField(max_length=200, help_text='Enter Book Title', null= False)
     author = models.CharField(max_length=50,help_text='Enter Author', null= False)
