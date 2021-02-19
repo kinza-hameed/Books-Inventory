@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.views.generic import ListView,DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-
+from django.contrib.postgres.search import SearchQuery
 from . import forms
 
 
@@ -69,7 +69,7 @@ def dashboard(request):
                     page_number = request.POST.get('page')
                     page_obj = paginator.get_page(page_number)
             if 'title' in checks:
-                search_query = Book.objects.filter(title__icontains = keyword).filter(seller = User.objects.get(username=request.user) )
+                search_query = Book.objects.filter(title__contains = SearchQuery(keyword)).filter(seller = User.objects.get(username=request.user) )
             if 'author' in checks:
                 search_query = Book.objects.filter(author__contains = keyword).filter(seller = User.objects.get(username=request.user))
             if 'publisher' in checks:
