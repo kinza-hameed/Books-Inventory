@@ -15,6 +15,7 @@ from django.db.models import Q
 from django.views.generic import ListView,DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+
 from . import forms
 
 

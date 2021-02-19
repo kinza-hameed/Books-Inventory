@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'booksinventoryapp',
 
     'storages',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
