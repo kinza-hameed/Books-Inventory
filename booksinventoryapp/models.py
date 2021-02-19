@@ -22,6 +22,10 @@ class Book(models.Model):
     quantity_and_price = models.ForeignKey(BookInfo, related_name='mybookinfo', on_delete=models.CASCADE, default=1)
     cover_page = models.ImageField()
 
+    def save(self, *args, **kwargs):
+        self.title = self.title.upper()
+        return super(Book, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.title.upper()
 
