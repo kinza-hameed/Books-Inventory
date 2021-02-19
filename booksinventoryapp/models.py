@@ -23,7 +23,7 @@ class Book(models.Model):
     cover_page = models.ImageField()
 
     def __str__(self):
-        return self.title
+        return self.title.upper()
 
     def get_absolute_url(self): 
         return reverse('book-detail', args=[str(self.id)])
