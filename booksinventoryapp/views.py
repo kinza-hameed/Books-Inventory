@@ -68,7 +68,7 @@ def dashboard(request):
                     page_number = request.POST.get('page')
                     page_obj = paginator.get_page(page_number)
             if 'title' in checks:
-                search_query = Book.objects.filter(title__contains = keyword).filter(seller = User.objects.get(username=request.user) )
+                search_query = Book.objects.filter(title__iexact = keyword).filter(seller = User.objects.get(username=request.user) )
             if 'author' in checks:
                 search_query = Book.objects.filter(author__contains = keyword).filter(seller = User.objects.get(username=request.user))
             if 'publisher' in checks:
