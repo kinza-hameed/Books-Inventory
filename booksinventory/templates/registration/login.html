@@ -40,8 +40,8 @@
       {% comment %} <input type="hidden" name="next" value="{{ next }}" /> </div> {% endcomment %}
 </form>
 
-<input type="submit" class="btn btn-info btn-block" value="signup" />
+{% comment %} <input type="submit" class="btn btn-info btn-block" value="signup" /> {% endcomment %}
 {% comment %} <p class="text-info" style="text-align:center;"><a href="{% url 'password_reset' %}">Lost password?</a><p> {% endcomment %}
-{% comment %} <p class="text-info" style="text-align:center;"><a href="{% url 'signup' %}">Sign up</a></p> {% endcomment %}
+<p style="position:relative; left:400px; right:20px; bottom:0px;">Don't have an account?</p> <a class="text-info" style="position:relative; left:410px; right:20px; top:2px;" href="{% url 'signup' %}">Sign up</a>
 
 {% endblock %}

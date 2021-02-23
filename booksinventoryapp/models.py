@@ -24,6 +24,9 @@ class Book(models.Model):
 
     def save(self, *args, **kwargs):
         self.title = self.title.upper()
+        self.author = self.author.upper()
+        self.publisher = self.publisher.upper()
+
         return super(Book, self).save(*args, **kwargs)
 
     def __str__(self):

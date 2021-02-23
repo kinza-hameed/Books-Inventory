@@ -37,34 +37,10 @@
 
         <ul class="list-unstyled components">
 
-
-           {%comment%} <li>
-                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Content</a>
-                <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <li><a href="{% url 'signup' %}">Sign Up</a></li>
-                        <li><a href="{% url 'home' %}">Home</a></li>
-                        <li><a href="{% url 'login' %}">Login</a></li>
-                </ul>
-            </li> {%endcomment%}
-            {% comment %}
-
-            {% if perms.catalog.add_author and perms.catalog.add_book %}
-                <li><a href="{% url 'catalog:author_create' %}">Add Authors</a></li>
-                <li><a href="{% url 'catalog:book_create' %}">Add Books</a></li>
-                <li><a href="{% url 'catalog:genre_create' %}">Add Genre</a></li>
-                <li><a href="{% url 'catalog:book_instance_create' %}">Loan Form</a></li>
-            {% endif %}
-            
-        
-            {% if perms.catalog.can_mark_returned%}
-                <li><a href="{% url 'catalog:all-borrowed' %}">All borrowed</a></li>
-            {% endif %}
-{% endcomment %}
             {% if user.is_authenticated %}
-                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'books' %}">All Books</a></li>
                 <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                 <li><a href="{% url 'add_book' %}">Add Book</a></li>
-                <li><a href="{% url 'books' %}">All Books</a></li>
                 <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>   <!-- request.path gives the link where user first click login/logout button --> <!-- after the user has succesfully logged in/out the view will use next value to redirect the user back to the page where they first click the login/logoutbutton --> 
 
 
@@ -91,10 +67,6 @@
                     </div>
 
 
-                    <!--<button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <i class="fas fa-align-justify"></i>
-                    </button> -->
-
                 </div>
         </nav>
 
@@ -103,32 +75,7 @@
     <!-- Page Content  -->
     
     {% block content %}{% endblock %}
-    {%comment%}
-            <div class="col-sm-7 mx-5">
-        {% block pagination %}
-            {% if is_paginated %}
-                <div class="pagination justify-content-center">
-                    <span class="page-item">
 
-                    {% if page_obj.has_previous %}
-                        <p class="text-primary" style="text-align:center;" ><a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a></p>
-                    {% endif %}  <!-- request.path to get the current page URL for creating the pagination links.--> 
-                
-                    {% if page_obj.has_next %}
-                        <p class="text-primary" style="text-align:center;"><a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a> </p>
-                    {% endif %}
-
-                    <span class="page-current">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                    </span>
-                    </span>
-                </div>
-                
-</div>
-
-        {% comment %} {% endif %} 
-    {% endblock %} 
-    {% endcomment%}
 </div>
     </div>
     </div>

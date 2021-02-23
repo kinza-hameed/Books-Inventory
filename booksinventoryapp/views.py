@@ -18,7 +18,6 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.postgres.search import SearchQuery
 from . import forms
 
-
 def register(request):
     if request.method =='POST':
         form = RegistrationForm(request.POST)
@@ -31,6 +30,9 @@ def register(request):
 
     arg = {'form':form}
     return render(request,'signup.html',arg)
+
+
+# The 'user' here is the data displayed for calling models
 
 
 def home(request):
@@ -59,7 +61,6 @@ def dashboard(request):
             
             search_is_empty = True
             keyword = search_form.cleaned_data['keyword'].upper()
-            print(keyword)
             checks = search_form.cleaned_data['checks']
             books_per_page = search_form.cleaned_data['books_per_page']
 
@@ -69,10 +70,11 @@ def dashboard(request):
                     paginator = Paginator(search_query, books_per_page) 
                     page_number = request.POST.get('page')
                     page_obj = paginator.get_page(page_number)
+                else:
+                    search_query = []
             if 'title' in checks:
                 search_query = Book.objects.filter(title__contains = keyword).filter(seller = User.objects.get(username=request.user) )
-                
-            print(search_query.query)
+                print(search_query)            
             if 'author' in checks:
                 search_query = Book.objects.filter(author__contains = keyword).filter(seller = User.objects.get(username=request.user))
             if 'publisher' in checks:
@@ -202,14 +204,13 @@ def add_book_details(request, isbn, seller, quantity , price):
             form.quantity_and_price = add_book_info
             form.save()
             return redirect("dashboard")
-            print(2)
     context = {'isbn':isbn,'seller': seller,'quantity': quantity, 'price': price, 'form':form}
     return render(request, 'add_book_details.html',context= context)
 
 
 class BookListView(LoginRequiredMixin,ListView):
     model = Book
-    paginate_by = 4
+    paginate_by = 50
     template_name = "book_list.html"
 
     def get_queryset(self):

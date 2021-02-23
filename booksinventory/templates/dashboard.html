@@ -1,55 +1,70 @@
 {% extends "base_generic.html" %}
 {% block content %}
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
 <style> 
     input{ 
       width:75%; 
-      padding: 12px; 
+      padding: 10px; 
       }
     .nobr{ 
       white-space: nowrap 
       }
-    {% comment %} ul{ 
-      white-space:nowrap; 
-      height: 1em;
-      width: 100%;
-      } 
-
-    li{ 
-      display:inline; 
-      } {% endcomment %}
+    .button1 {
+      padding: 11px 32px;
+      width:20%;
+    }
 </style> 
 
-<div class="col-sm-7">
-  <h2>Search Book </h2> </div><hr/>
-  <div class='nobr'>
-    <form method='POST' action={% url 'dashboard' %} >
-    {% csrf_token %}
-      {% for field in search_form%}
-      <div class="form-group row mt-4 ">
-        <div class="col-sm-2 col-form-label">{{ field.label_tag }}</div>
-          <div class="col-sm-7 ">
-            {{field}}
-            {% if field.help_text %}
-              <small style="color: grey">{{ field.help_text }}</small>
-            {% endif %}
-            {% for error in field.errors %}
-              <p style="color: red">{{ error }}</p>
-            {% endfor %}
-          </div>
-      </div>
-    {% endfor %}
+<div class="col-sm-7"></div>
+    <form method='POST' action=/dashboard/ >
+     {% csrf_token %}
+      <div class="w3-dropdown-hover w3-right">
+            <label for="id_books_per_page">Books per page:</label>
+            <select name="books_per_page" id="id_books_per_page">
+              <option value="25">25</option>
 
-    <div class="button">
-      <button type="submit"  class="btn btn-info btn-block">Search</button>
-    </div><hr/>
-    
-  </div>
-  {% comment %} </form> {% endcomment %}
-  <div>
+              <option value="50">50</option>
+
+              <option value="75">75</option>
+
+            </select> 
+      </div><br>
+      <div class="form-group row mt-4 ">
+      
+      <div style="position:relative; left:10px;"class="col-sm-2.5 nobr"><h1>Book Search: </h1></div>
+            <div class="col-sm-7">
+            <input style="position:relative; left:10px; right:20px; top:10px; width:107%" class="input" type="text" name="keyword" required id="id_keyword">
+            
+            <button style="position:relative; left:670px; right:20px; top:-37px;" type="submit"  class="btn btn-info  button1">Search</button></div>
+            
+      </div>
+      
+
+        <div style="position:relative; left:197px; right:20px; bottom:35px;" class="col-sm-3 col-form-label"><label>Filters:</label></div>
+          <div class="nobr">
+            <ul id="id_checks">
+    <label style="position:relative; left:220px; right:20px; bottom:70px;" class="col-sm-1" for="id_checks_0"><input type="checkbox" name="checks" value="isbn" id="id_checks_0">ISBN</label>
+
+    <label style="position:relative; left:220px; right:20px; bottom:70px;" class="col-sm-1" for="id_checks_1"><input type="checkbox" name="checks" value="title" id="id_checks_1">Title</label>
+
+    <label style="position:relative; left:220px; right:20px; bottom:70px;" class="col-sm-1" for="id_checks_2"><input type="checkbox" name="checks" value="author" id="id_checks_2">Author</label>
+
+    <label style="position:relative; left:220px; right:20px; bottom:70px;" class="col-sm-1" for="id_checks_3"><input type="checkbox" name="checks" value="publisher" id="id_checks_3">Publisher</label>
+
+
+</ul>
+            
+            
+          </div>
+
+</form>
+
+  <div style="position:relative; bottom:75px;">
     {% if search_query %}
       <div class="col-sm-7">
-      <h2>Search Results </h2> </div><hr/>
+      <hr/><h1>Search Results </h1> </div><hr/>
   <section class="text-center mb-4">
     <div class="row wow fadeIn">
     {% for book in page_obj %}
@@ -85,9 +100,10 @@
 
   </section>
     {% elif search_is_empty %}
+    <hr/><h1>Search Results </h1><hr/>
       <p> Book not found </p> 
     {% endif %} 
-  </div><hr/>
+  </div>
 {% if search_query %}
 <div class="pagination justify-content-center">
     <span class="page-item">
